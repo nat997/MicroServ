@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    depends_on:
+      - database
+    networks:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+    networks:
+      - db
+
+  database:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: microservicegraph
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    networks:
+      - db
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+networks:
+  db:
+
+volumes:
+  pg_data:
+  certs:
