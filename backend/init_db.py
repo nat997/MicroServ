@@ -24,22 +24,8 @@ cursor.execute(
     .format(role=sql.Identifier('admin'), password=sql.Literal('admin'))
 )
 
-# Create the microservicegraph database if it does not exist
-cursor.execute("CREATE DATABASE IF NOT EXISTS microservicegraph;")
-
-cursor.close()
-conn.close()
-
-# Define the connection parameters for the main database
-db_params = {
-    'dbname': 'microservicegraph',
-    'user': 'admin',
-    'host': 'database',
-    'port': 5432
-}
-
-# Connect to the PostgreSQL database with the specified user and password
-conn = psycopg2.connect(**db_params)
+# Connect to the 'postgres' database
+conn = psycopg2.connect(**default_db_params, dbname='postgres')
 cursor = conn.cursor()
 
 # Create the temperature_data table if it does not exist

@@ -3,7 +3,7 @@ import pandas as pd
 import psycopg2
 
 # Connect to the PostgreSQL database
-conn = psycopg2.connect(dbname='microservicegraph', user='admin', password='admin', host='database', port=5432)
+conn = psycopg2.connect(dbname='postgres', user='admin', password='admin', host='database', port=5432)
 cursor = conn.cursor()
 
 st.title("Temperature Data Visualization")

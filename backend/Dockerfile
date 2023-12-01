@@ -6,4 +6,5 @@ COPY . /app
 
 RUN pip install --no-cache-dir psycopg2-binary
 
-CMD ["python", "init_db.py"]
+CMD ["bash", "-c", "python init_db.py && tail -f /dev/null"]
+
