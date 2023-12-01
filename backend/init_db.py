@@ -1,9 +1,7 @@
 import psycopg2
-from psycopg2 import sql
 import random
 from datetime import datetime, timedelta
 
-# Connection parameters for the default PostgreSQL user
 default_db_params = {
     'dbname': 'postgres',
     'user': 'admin',
@@ -12,23 +10,16 @@ default_db_params = {
     'port': 5432
 }
 
-# Connect to the PostgreSQL database with the default parameters
-conn = psycopg2.connect(**default_db_params)
+conn = psycopg2.connect(
+    dbname=default_db_params['dbname'],
+    user=default_db_params['user'],
+    password=default_db_params['password'],
+    host=default_db_params['host'],
+    port=default_db_params['port']
+)
 conn.autocommit = True
 cursor = conn.cursor()
 
-# Create the role 'admin' with password 'admin' if it does not exist
-cursor.execute(
-    sql.SQL("DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = {role}) THEN "
-            "CREATE ROLE {role} WITH LOGIN PASSWORD {password}; END IF; END $$;")
-    .format(role=sql.Identifier('admin'), password=sql.Literal('admin'))
-)
-
-# Connect to the 'postgres' database
-conn = psycopg2.connect(**default_db_params, dbname='postgres')
-cursor = conn.cursor()
-
-# Create the temperature_data table if it does not exist
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS temperature_data (
         timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
@@ -36,13 +27,11 @@ cursor.execute("""
     );
 """)
 
-# Insert random data into the table
 for _ in range(100):
     timestamp = datetime.utcnow() - timedelta(days=random.randint(0, 30))
     temperature = round(random.uniform(20.0, 30.0), 2)
     cursor.execute("INSERT INTO temperature_data (timestamp, temperature) VALUES (%s, %s);", (timestamp, temperature))
 
-# Commit the changes and close the connection
 conn.commit()
 cursor.close()
 conn.close()

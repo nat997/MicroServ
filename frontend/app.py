@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import psycopg2
 
-# Connect to the PostgreSQL database
 conn = psycopg2.connect(dbname='postgres', user='admin', password='admin', host='database', port=5432)
 cursor = conn.cursor()
 
@@ -14,8 +13,6 @@ login_pw = st.text_input("Enter your Password:", type="password")
 if login_id == "admin" and login_pw == "admin":
     st.success("Logged in successfully!")
     st.header("Temperature Graph")
-
-    # Retrieve data from the 'temperature_data' table
     query = "SELECT * FROM temperature_data;"
     cursor.execute(query)
     data = cursor.fetchall()
@@ -28,6 +25,5 @@ if login_id == "admin" and login_pw == "admin":
 else:
     st.warning("Incorrect ID or Password. Please try again.")
 
-# Close the database connection
 cursor.close()
 conn.close()
